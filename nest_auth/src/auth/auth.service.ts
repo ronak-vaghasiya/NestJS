@@ -11,7 +11,16 @@ import * as jwt from 'jsonwebtoken';
 export class AuthService {
   constructor(private userService: UserService) {}
 
-  async validateUser(email: string, password: string) {
+  generateToken(user: any) {
+    const payload = { sub: user.id, email: user.email };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    return { access_token: token };
+  }
+
+  async login(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
@@ -27,15 +36,6 @@ export class AuthService {
 
     const user = await this.userService.create(email, password);
     return this.generateToken(user);
-  }
-
-  generateToken(user: any) {
-    const payload = { sub: user.id, email: user.email };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    return { access_token: token };
   }
 
   async forgotPassword(email: string) {
