@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { Register } from './common/entity/register.entity';
+import { TodoModule } from './todo/todo.module';
+import { Todo } from './common/entity/todo.entity';
 
 @Module({
   imports: [
@@ -21,12 +23,13 @@ import { Register } from './common/entity/register.entity';
           'your-password',
         ),
         database: configService.get<string>('DATABASE_NAME', 'your-database'),
-        entities: [Register],
+        entities: [Register, Todo],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     AuthenticationModule,
+    TodoModule,
   ],
 })
 export class AppModule {}
