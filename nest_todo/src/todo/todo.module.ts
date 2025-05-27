@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TodoController } from './todo.controller';
 import { TodoService } from './todo.service';
-import { AuthenticationMiddleware } from 'src/authentication/authentication.middleware';
+import { AuthenticationMiddleware } from 'src/auth/auth.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Todo } from '../common/entity/todo.entity';
 import { JwtModule } from '@nestjs/jwt';

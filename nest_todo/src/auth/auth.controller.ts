@@ -6,12 +6,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from './auth.service';
 import { LoginDto } from '../common/dto/login.dto';
 import { RegisterDto } from '../common/dto/register.dto';
 import { Register } from '../common/entity/register.entity';
 
-@Controller('authentication')
+@Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
