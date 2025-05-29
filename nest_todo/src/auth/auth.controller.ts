@@ -5,6 +5,8 @@ import {
   Get,
   UsePipes,
   ValidationPipe,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { AuthenticationService } from './auth.service';
 import { LoginDto } from '../common/dto/login.dto';
@@ -51,5 +53,11 @@ export class AuthenticationController {
   @UsePipes(new ValidationPipe())
   getAllUsers(): Promise<LoginDto[]> {
     return this.authenticationService.getAllUsers();
+  }
+
+  @Delete('delete-user/:id')
+  @UsePipes(new ValidationPipe())
+  deleteUser(@Param('id') id: string): Promise<{ message: string }> {
+    return this.authenticationService.deleteUser(id);
   }
 }

@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class Todo {
@@ -30,8 +33,9 @@ export class Todo {
   @Column({ type: 'enum', enum: ['low', 'medium', 'high'], default: 'medium' })
   priority: 'low' | 'medium' | 'high';
 
-  @Column('simple-array', { nullable: true })
-  tags: string[];
+  @ManyToMany(() => Tag, (tag) => tag.todos, { cascade: true })
+  @JoinTable()
+  tags: Tag[];
 
   @Column()
   dueDate: Date;

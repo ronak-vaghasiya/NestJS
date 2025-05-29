@@ -20,9 +20,21 @@ export class TodoController {
     return this.todoService.createTodo(createTodoDto);
   }
 
-  @Get('/all')
-  getAllTodos() {
-    return this.todoService.getAllTodos();
+  @Post('all')
+  async getFilteredTodos(@Body() filters: any) {
+    return this.todoService.getAllTodos({
+      page: Number(filters.page) || 1,
+      perPage: Number(filters.perPage) || 10,
+      title: filters.title,
+      assignedTo: filters.assignedTo,
+      status: filters.status,
+      priority: filters.priority,
+      tags: Array.isArray(filters.tags)
+        ? filters.tags
+        : typeof filters.tags === 'string'
+          ? filters.tags.split(',')
+          : undefined,
+    });
   }
 
   @Get('/:id')

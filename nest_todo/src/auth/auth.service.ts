@@ -9,9 +9,9 @@ import { Repository } from 'typeorm';
 import { RegisterDto } from '../common/dto/register.dto';
 import { LoginDto } from '../common/dto/login.dto';
 import { Register } from '../common/entity/register.entity';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthenticationService {
@@ -156,5 +156,15 @@ export class AuthenticationService {
       password: user.password,
       profilePicture: user.profilePicture,
     }));
+  }
+
+  async deleteUser(id: string): Promise<{ message: string }> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.userRepository.remove(user);
+    return { message: 'User deleted successfully' };
   }
 }
