@@ -35,7 +35,7 @@ export class TodoController {
           ? filters.tags.split(',')
           : undefined,
     });
-  }
+  } 
 
   @Get('/:id')
   getTodo(@Param('id') id: string) {

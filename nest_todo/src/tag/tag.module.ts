@@ -21,4 +21,5 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [TagController],
   providers: [TagService],
 })
+
 export class TagModule {}

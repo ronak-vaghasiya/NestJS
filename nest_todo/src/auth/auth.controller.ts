@@ -19,7 +19,9 @@ export class AuthenticationController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  login(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
+  login(
+    @Body() loginDto: LoginDto,
+  ): Promise<{ accessToken: string | null; refereshToken: string | null }> {
     return this.authenticationService.login(loginDto);
   }
 

@@ -66,7 +66,9 @@ export class AuthenticationService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string | null; refereshToken: string | null }> {
     const { email, password } = loginDto;
 
     // Find user by email
@@ -92,8 +94,11 @@ export class AuthenticationService {
       username: user.username,
     };
     const accessToken = this.jwtService.sign(payload);
+    const refereshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
-    return { accessToken };
+    return { accessToken, refereshToken };
   }
 
   async updatePassword(

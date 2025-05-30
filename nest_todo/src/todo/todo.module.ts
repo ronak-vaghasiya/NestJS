@@ -23,6 +23,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [TodoController],
   providers: [TodoService],
 })
+
 export class TodoModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthenticationMiddleware).forRoutes('todo');
