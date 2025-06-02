@@ -21,7 +21,7 @@ export class TodoController {
   }
 
   @Post('all')
-  async getFilteredTodos(@Body() filters: any) {
+  getFilteredTodos(@Body() filters: any) {
     return this.todoService.getAllTodos({
       page: Number(filters.page) || 1,
       perPage: Number(filters.perPage) || 10,
@@ -35,7 +35,7 @@ export class TodoController {
           ? filters.tags.split(',')
           : undefined,
     });
-  } 
+  }
 
   @Get('/:id')
   getTodo(@Param('id') id: string) {

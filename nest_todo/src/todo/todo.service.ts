@@ -53,7 +53,10 @@ export class TodoService {
   }
 
   async getTodo(id: string): Promise<Todo> {
-    const todo = await this.todoRepository.findOne({ where: { id } });
+    const todo = await this.todoRepository.findOne({
+      where: { id },
+      relations: ['tags'],
+    });
     if (!todo) {
       throw new NotFoundException('Todo not found');
     }
