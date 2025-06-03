@@ -6,49 +6,47 @@ import {
   Put,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from '../common/dto/create.todo.dto';
 import { UpdateTodoDto } from '../common/dto/update.todo.dto';
+import { FilterTodosDto } from 'src/common/dto/filterTodos.dto';
 
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post('/create')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   createTodo(@Body() createTodoDto: CreateTodoDto) {
     return this.todoService.createTodo(createTodoDto);
   }
 
   @Post('all')
-  getFilteredTodos(@Body() filters: any) {
-    return this.todoService.getAllTodos({
-      page: Number(filters.page) || 1,
-      perPage: Number(filters.perPage) || 10,
-      title: filters.title,
-      assignedTo: filters.assignedTo,
-      status: filters.status,
-      priority: filters.priority,
-      tags: Array.isArray(filters.tags)
-        ? filters.tags
-        : typeof filters.tags === 'string'
-          ? filters.tags.split(',')
-          : undefined,
-    });
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  getFilteredTodos(@Body() filters: FilterTodosDto) {
+    return this.todoService.getAllTodos(filters);
   }
 
   @Get('/:id')
-  getTodo(@Param('id') id: string) {
+  getTodo(@Param('id', ParseUUIDPipe) id: string) {
     return this.todoService.getTodo(id);
   }
 
   @Put('/update/:id')
-  updateTodo(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  updateTodo(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
     return this.todoService.updateTodo({ ...updateTodoDto, id });
   }
 
   @Delete('/delete/:id')
-  deleteTodo(@Param('id') id: string) {
+  deleteTodo(@Param('id', ParseUUIDPipe) id: string) {
     return this.todoService.deleteTodo(id);
   }
 }

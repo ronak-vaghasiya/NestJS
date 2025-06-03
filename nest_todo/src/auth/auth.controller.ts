@@ -7,18 +7,21 @@ import {
   ValidationPipe,
   Delete,
   Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthenticationService } from './auth.service';
 import { LoginDto } from '../common/dto/login.dto';
 import { RegisterDto } from '../common/dto/register.dto';
 import { Register } from '../common/entity/register.entity';
+import { UpdatePasswordDto } from 'src/common/dto/updatePassword.dto';
+import { ForgotPasswordDto } from 'src/common/dto/forgotPassword.dto';
 
 @Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('login')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   login(
     @Body() loginDto: LoginDto,
   ): Promise<{ accessToken: string | null; refereshToken: string | null }> {
@@ -26,18 +29,17 @@ export class AuthenticationController {
   }
 
   @Post('register')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   register(@Body() registerDto: RegisterDto): Promise<Partial<Register>> {
     return this.authenticationService.register(registerDto);
   }
 
   @Post('update-password')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   updatePassword(
-    @Body('email') email: string,
-    @Body('oldPassword') oldPassword: string,
-    @Body('newPassword') newPassword: string,
+    @Body() body: UpdatePasswordDto,
   ): Promise<{ message: string }> {
+    const { email, oldPassword, newPassword } = body;
     return this.authenticationService.updatePassword(
       email,
       oldPassword,
@@ -46,20 +48,24 @@ export class AuthenticationController {
   }
 
   @Post('forgot-password')
-  @UsePipes(new ValidationPipe())
-  forgotPassword(@Body('email') email: string): Promise<{ message: string }> {
-    return this.authenticationService.forgotPassword(email);
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  forgotPassword(
+    @Body() body: ForgotPasswordDto,
+  ): Promise<{ message: string }> {
+    return this.authenticationService.forgotPassword(body.email);
   }
 
   @Get('all-users')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   getAllUsers(): Promise<LoginDto[]> {
     return this.authenticationService.getAllUsers();
   }
 
   @Delete('delete-user/:id')
-  @UsePipes(new ValidationPipe())
-  deleteUser(@Param('id') id: string): Promise<{ message: string }> {
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  deleteUser(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<{ message: string }> {
     return this.authenticationService.deleteUser(id);
   }
 }
